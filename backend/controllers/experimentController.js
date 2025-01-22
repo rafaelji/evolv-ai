@@ -36,6 +36,8 @@ const postLogsByExperimentId = (req, res) => {
 
   experiment.liveUpdates.push({ timestamp: new Date().toISOString(), ...log });
 
+  const variantsUpdatedValues = [];
+
   // Loop through each key in the log (e.g., "control", "variantB")
   Object.keys(log).forEach((key) => {
     const variant = experiment.variants.find(
@@ -47,8 +49,14 @@ const postLogsByExperimentId = (req, res) => {
       variant.visitors += log[key].visitors || 0;
       variant.conversions += log[key].conversions || 0;
       variant.revenue += log[key].revenue || 0;
+
+      variantsUpdatedValues.push(variant);
     }
   });
+
+  if (variantsUpdatedValues.length) {
+    experiment.variants = variantsUpdatedValues;
+  }
 
   experimentList.splice(
     experimentList.findIndex(

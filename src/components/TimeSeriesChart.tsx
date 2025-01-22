@@ -60,15 +60,20 @@ const TimeSeriesChart = () => {
 
   const formatData = (experiment: Experiment) => {
     return {
-      labels: experiment?.liveUpdates.map((update: LiveUpdate) =>
-        new Date(update.timestamp).toLocaleString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          // @ts-expect-error typescript is not recognizing this property but it does exists
-          fractionalSecondDigits: 3,
-        }),
-      ),
+      labels: experiment?.liveUpdates
+        .sort(
+          (a, b) =>
+            new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+        )
+        .map((update: LiveUpdate) =>
+          new Date(update.timestamp).toLocaleString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            // @ts-expect-error typescript is not recognizing this property but it does exists
+            fractionalSecondDigits: 3,
+          }),
+        ),
       datasets: [
         {
           label: `Control - Visitors`,
