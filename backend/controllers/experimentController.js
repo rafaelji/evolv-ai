@@ -1,5 +1,6 @@
 import { experimentList } from "../data/fakeData.js";
 import { broadcast } from "../index.js";
+import { getMetricValues } from "../services/experimentService.js";
 
 const getLiveExperiments = (req, res) => {
   res.json(
@@ -18,10 +19,9 @@ const getMetricsByExperimentId = (req, res) => {
     return res.status(404).json({ message: "Experiment not found" });
   }
 
-  res.json({
-    experimentId: experiment.experimentId,
-    metrics: experiment.variants,
-  });
+  const metricValues = getMetricValues(experiment);
+
+  res.json(metricValues);
 };
 
 const postLogsByExperimentId = (req, res) => {
@@ -36,6 +36,20 @@ const postLogsByExperimentId = (req, res) => {
 
   experiment.liveUpdates.push({ timestamp: new Date().toISOString(), ...log });
 
+  // Loop through each key in the log (e.g., "control", "variantB")
+  Object.keys(log).forEach((key) => {
+    const variant = experiment.variants.find(
+      (v) => v.name.toLowerCase() === key.toLowerCase(),
+    );
+
+    if (variant) {
+      // Sum up each property
+      variant.visitors += log[key].visitors || 0;
+      variant.conversions += log[key].conversions || 0;
+      variant.revenue += log[key].revenue || 0;
+    }
+  });
+
   experimentList.splice(
     experimentList.findIndex(
       (exp) => exp.experimentId === experiment.experimentId,
@@ -48,6 +62,7 @@ const postLogsByExperimentId = (req, res) => {
 
   // Send updated data to clients connected via WebSocket
   broadcast({ type: "updateExperimentList", list: experimentList });
+  broadcast({ type: "updateMetrics", ...getMetricValues(experiment) });
 
   res.status(201).json({ message: "Log registered successfully" });
 };
