@@ -3,7 +3,7 @@ import {
   ExperimentContext,
   LiveUpdate,
 } from "../providers/ExperimentProvider.tsx";
-import { getLastUpdatedDate } from "../services/last-updated";
+import { getLastUpdatedData } from "../services/last-updated";
 
 const Header = () => {
   const { experiments } = useContext(ExperimentContext);
@@ -14,7 +14,7 @@ const Header = () => {
 
   const getLastUpdated = useCallback(async () => {
     try {
-      const response = await getLastUpdatedDate();
+      const response = await getLastUpdatedData();
       setLastUpdated(response[0].liveUpdates.sort(sortByNewest)[0].timestamp);
     } catch (error) {
       console.log(error);

@@ -3,7 +3,7 @@ import {
   ExperimentContext,
   LiveUpdate,
 } from "../providers/ExperimentProvider.tsx";
-import { getLastUpdatedDate } from "../services/last-updated";
+import { getLastUpdatedData } from "../services/last-updated";
 
 const EventLogPanel = () => {
   const { experiments } = useContext(ExperimentContext);
@@ -11,7 +11,7 @@ const EventLogPanel = () => {
 
   const getLastUpdates = useCallback(async () => {
     try {
-      const response = await getLastUpdatedDate();
+      const response = await getLastUpdatedData();
       setLogs(response[0].liveUpdates);
     } catch (error) {
       console.log(error);
@@ -64,7 +64,7 @@ const EventLogPanel = () => {
     <div className="w-full space-y-4 rounded-lg bg-white p-6 shadow-md">
       <h2 className="text-lg font-semibold text-gray-800">Event Logs</h2>
       <div className="flex h-40 items-center justify-center rounded-lg bg-gray-100">
-        <ul className="max-h-40 w-full overflow-auto rounded bg-gray-100 p-2">
+        <ul className="max-h-40 w-full overflow-auto rounded bg-gray-100 p-4">
           {logs?.map((log) => formatData(log))}
         </ul>
       </div>
