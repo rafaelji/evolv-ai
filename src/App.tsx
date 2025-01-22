@@ -1,10 +1,13 @@
 import Dashboard from "./Dashboard.tsx";
+import { ExperimentProvider } from "./providers/ExperimentProvider.tsx";
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Dashboard />
-    </div>
+    <ExperimentProvider>
+      <div className="min-h-screen bg-gray-50">
+        <Dashboard />
+      </div>
+    </ExperimentProvider>
   );
 }
 

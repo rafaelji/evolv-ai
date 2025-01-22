@@ -1,4 +1,5 @@
 import { experimentList } from "../data/fakeData.js";
+import { broadcast } from "../index.js";
 
 const getLiveExperiments = (req, res) => {
   res.json(
@@ -44,6 +45,9 @@ const postLogsByExperimentId = (req, res) => {
   );
 
   console.log(`Log registered for experiment ${id}:`, log);
+
+  // Send updated data to clients connected via WebSocket
+  broadcast({ type: "updateExperimentList", list: experimentList });
 
   res.status(201).json({ message: "Log registered successfully" });
 };
