@@ -2,34 +2,32 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import { useCallback, useContext, useEffect, useState } from "react";
 import {
   Experiment,
   ExperimentContext,
   LiveUpdate,
-} from "../../providers/ExperimentProvider.tsx";
-import { getLastUpdatedData } from "../../services/last-updated";
+} from "../providers/ExperimentProvider.tsx";
+import { getLastUpdatedData } from "../services/last-updated";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
 );
 
 export const options = {
-  interaction: {
-    mode: "index" as const,
-    intersect: false,
-  },
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
@@ -38,15 +36,7 @@ export const options = {
     },
     title: {
       display: false,
-      text: "Performance",
-    },
-  },
-  scales: {
-    x: {
-      stacked: true,
-    },
-    y: {
-      stacked: true,
+      text: "Time Series Chart",
     },
   },
 };
@@ -57,11 +47,11 @@ interface ChartDataProps {
     label: string;
     data: number[];
     backgroundColor: string;
-    stack: string;
+    borderColor: string;
   }[];
 }
 
-const PerformanceChart = () => {
+const TimeSeriesChart = () => {
   const { experiments } = useContext(ExperimentContext);
   const [data, setData] = useState<ChartDataProps>({
     labels: [],
@@ -86,7 +76,7 @@ const PerformanceChart = () => {
             (update: LiveUpdate) => update.control?.visitors,
           ),
           backgroundColor: "rgb(255, 99, 132)",
-          stack: "Stack 0",
+          borderColor: "rgb(255, 99, 132, 0.5)",
         },
         {
           label: `Control - Conversions`,
@@ -94,7 +84,7 @@ const PerformanceChart = () => {
             (update: LiveUpdate) => update.control?.conversions,
           ),
           backgroundColor: "rgb(75, 192, 192)",
-          stack: "Stack 0",
+          borderColor: "rgb(75, 192, 192, 0.5)",
         },
         {
           label: `Control - Revenue`,
@@ -102,31 +92,31 @@ const PerformanceChart = () => {
             (update: LiveUpdate) => update.control?.revenue,
           ),
           backgroundColor: "rgb(53, 162, 235)",
-          stack: "Stack 0",
+          borderColor: "rgb(53, 162, 235, 0.5)",
         },
         {
           label: `Variant B - Visitors`,
           data: experiment?.liveUpdates.map(
-            (update: LiveUpdate) => update.control?.visitors,
+            (update: LiveUpdate) => update.variantB?.visitors,
           ),
           backgroundColor: "rgb(123, 104, 238)",
-          stack: "Stack 1",
+          borderColor: "rgb(123, 104, 238, 0.5)",
         },
         {
           label: `Variant B - Conversions`,
           data: experiment?.liveUpdates.map(
-            (update: LiveUpdate) => update.control?.conversions,
+            (update: LiveUpdate) => update.variantB?.conversions,
           ),
           backgroundColor: "rgb(255, 69, 0)",
-          stack: "Stack 1",
+          borderColor: "rgb(255, 69, 0, 0.5)",
         },
         {
           label: `Variant B - Revenue`,
           data: experiment?.liveUpdates.map(
-            (update: LiveUpdate) => update.control?.revenue,
+            (update: LiveUpdate) => update.variantB?.revenue,
           ),
           backgroundColor: "rgb(255, 165, 0)",
-          stack: "Stack 1",
+          borderColor: "rgb(255, 165, 0, 0.5)",
         },
       ],
     };
@@ -149,7 +139,7 @@ const PerformanceChart = () => {
     getLastChartData();
   }, [getLastChartData]);
 
-  return <Bar options={options} data={data} />;
+  return <Line options={options} data={data} />;
 };
 
-export default PerformanceChart;
+export default TimeSeriesChart;

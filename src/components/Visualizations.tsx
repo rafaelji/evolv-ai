@@ -1,4 +1,5 @@
-import PerformanceChart from "./PerformanceChart";
+import PerformanceChart from "./PerformanceChart.tsx";
+import TimeSeriesChart from "./TimeSeriesChart.tsx";
 
 const Visualizations = () => {
   return (
@@ -9,9 +10,8 @@ const Visualizations = () => {
       <div className="flex h-96 items-center justify-center rounded-lg bg-gray-100 p-4">
         <PerformanceChart />
       </div>
-      {/* Line Chart */}
-      <div className="flex h-64 items-center justify-center rounded-lg bg-gray-100">
-        <span className="text-gray-400">Line Chart Placeholder</span>
+      <div className="flex h-96 items-center justify-center rounded-lg bg-gray-100 p-4">
+        <TimeSeriesChart />
       </div>
     </div>
   );
