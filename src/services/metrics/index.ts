@@ -7,7 +7,7 @@ export interface MetricValues {
 
 export const getUpdatedMetrics = async (id: string): Promise<MetricValues> => {
   const response = await fetch(
-    `http://localhost:5002/api/experiments/${id}/metrics`,
+    `${import.meta.env.VITE_API_URL}/api/experiments/${id}/metrics`,
     {
       method: "GET",
     },
